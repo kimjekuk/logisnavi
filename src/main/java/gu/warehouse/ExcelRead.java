@@ -91,7 +91,7 @@ public class ExcelRead {
                     map.put(cellName, ExcelCellRef.getValue(cell));
                 }
                 /*
-                 * 만들어진 Map객체를 List로 넣는다. test
+                 * 만들어진 Map객체를 List로 넣는다. test  
                  */
                 result.add(map);
                 
