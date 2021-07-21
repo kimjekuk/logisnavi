@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="board">
+
+    <select id="selectWareList"  parameterType="gu.common.SearchVO" resultType="gu.warehouse.WarehouseVO">
+	   SELECT    
+				whcode,
+				whname,
+				mpadrs,
+				kkompx,
+				kkompy,
+				szarea	
+          FROM tb_wahama TC
+          where 1=1
+          AND	TC.whname LIKE CONCAT('%', #{searchKeyword},'%')          
+          AND	TC.mpadrs LIKE CONCAT('%', #{searchExt1},'%')         
+	      <if test="searchExt2 != null and searchExt2 !=''">
+	    	  AND   TC.whcode = #{searchExt2}
+	      </if>
+         <if test="rowStart != null">
+             LIMIT ${rowStart-1}, 10000
+         </if>
+         order by whcode desc
+    </select> 
+    
+    
+    <select id="selectWareListInfo"  parameterType="gu.common.SearchVO" resultType="gu.warehouse.WareInfoVO">
+		select
+			wh.whcode,
+			wh.whname,
+			wh.mpadrs,
+			wh.kkompx,
+			wh.kkompy,
+			wh.szposi,
+			wh.szstrt,
+			wh.szarea,
+			wh.ifsize,
+			wh.ifstrt,
+			wh.trcoty,
+			wh.prprdy,
+			wh.prstdy,
+			wh.prusdy,
+			wh.img001,
+			wh.img002,
+			wh.img003,
+			wh.img004,
+			wh.img005,
+			wh.mpicif,
+			wh.etcstr,				
+			wh.mgbdrgpk,				
+			wf.whflcd,
+			wf.whflnm,
+			wf.usetyp,
+			wf.flarea,
+			wf.flmpay,
+			wf.admpay,
+			wf.pprice,
+			wf.lsfrom,
+			wf.cadf01,
+			wf.dealty,
+			wf.infday
+		from
+			tb_wahama wh left outer join tb_wahafl wf
+			on wh.whcode = wf.whcode 
+		where 1=1
+		and (wh.whname LIKE CONCAT('%', #{searchKeyword},'%') or wh.mpadrs LIKE CONCAT('%', #{searchKeyword},'%'))
+		and wf.FLAREA between #{searchExt1} and #{searchExt2}
+		and wf.FLAREA > 100
+		order by wh.whcode asc, wf.whflnm asc
+         <if test="rowStart != null">
+             LIMIT ${rowStart-1}, 10000
+         </if>		
+    </select>     
+
+
+    <select id="selectWareFloor"  parameterType="String"  resultType="gu.warehouse.WareFloorVO">
+		select
+			wf.whcode,
+			wf.whflcd,
+			wf.whflnm,
+			wf.usetyp,
+			wf.flarea,
+			wf.flmpay,
+			wf.admpay,
+			wf.pprice,
+			wf.lsfrom,
+			wf.cadf01,
+			wf.dealty,
+			wf.infday
+		from tb_wahafl wf
+		where 1=1
+		and	wf.whcode = #{whcode} 
+		and wf.flarea > 100
+		order by wf.whflnm asc
+    </select>     
+    
+    <select id="selectCheckWarehouse"  parameterType="java.util.Map" resultType="gu.warehouse.WarehouseVO">
+	   SELECT    
+				whcode,
+				whname,
+				mpadrs,
+				kkompx,
+				kkompy,
+				szarea
+          FROM tb_wahama TC
+          where 1=1
+        AND TC.whcode IN 
+		    <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+		        #{item}
+		    </foreach>         
+    </select>        
+    
+    <select id="selectWareOne" parameterType="String" resultType="gu.warehouse.WarehouseVO">
+	   SELECT    
+			TC.whcode,
+			TC.whname,
+			TC.mpadrs,
+			TC.kkompx,
+			TC.kkompy,
+			TC.szposi,
+			TC.szstrt,
+			TC.szarea,
+			TC.ifsize,
+			TC.ifstrt,
+			TC.trcoty,
+			TC.prprdy,
+			TC.prstdy,
+			TC.prusdy,
+			TC.img001,
+			TC.img002,
+			TC.img003,
+			TC.img004,
+			TC.img005,
+			TC.mpicif,
+			TC.etcstr,
+			TC.mgbdrgpk			
+          FROM tb_wahama TC
+          where 1=1
+    	  AND   TC.whcode = #{whcode}
+    </select> 
+    
+    <insert id="insertWare" parameterType="gu.warehouse.WarehouseVO" >
+        <selectKey resultType="String" keyProperty="whcode" order="BEFORE">
+            SELECT IFNULL(MAX(whcode),0)+1 FROM tb_wahama
+        </selectKey>
+   		INSERT INTO tb_wahama (WHCODE, WHNAME, MPADRS, KKOMPX, KKOMPY, SZAREA, IMG001) 
+   		VALUES(#{whcode}, #{whname}, #{mpadrs}, #{kkompx}, #{kkompy}, #{szarea}, #{img001})
+    </insert>    
+    
+
+    <insert id="insertXLS" parameterType="gu.etc.ExcelVo"  > 
+        <selectKey resultType="Integer" keyProperty="seq" order="BEFORE">
+            SELECT IFNULL(MAX(seq),0)+1 FROM tb_xls_upload
+        </selectKey>    
+    	INSERT INTO tb_xls_upload (seq, xls_data01, xls_data02, xls_data03, xls_data04, xls_data05, creusr, credat, cretim) 
+    	VALUES(#{seq}, #{xls_data01}, #{xls_data02},#{xls_data03}, #{xls_data04}, #{xls_data05}, 'test','20210721', '1530')
+    </insert>    
+
+ 
+    <select id="selectTitlePartList" parameterType="gu.common.SearchVO" resultType="gu.warehouse.WareTitlepartVO">
+		select
+			max(mgbdrgpk)      mgbdrgpk          ,
+			max(rgdvcd)        rgdvcd            ,
+			max(rgdvcdnm)      rgdvcdnm          ,
+			max(rgkdcd)        rgkdcd            ,
+			max(rgkdcdnm)      rgkdcdnm          ,
+			max(ldxy)          ldxy              ,
+			max(rdnmldxy)      rdnmldxy          ,
+			max(bdnm)          bdnm              ,
+			max(sggcd)         sggcd             ,
+			max(lwdcd)         lwdcd             ,
+			max(lddvcd)        lddvcd            ,
+			max(bun)           bun               ,
+			max(ji)            ji                ,
+			max(sldnm)         sldnm             ,
+			max(bl)            bl                ,
+			max(lt)            lt                ,
+			max(otldcnt)       otldcnt           ,
+			max(nadrdcd)       nadrdcd           ,
+			max(nadlwdcd)      nadlwdcd          ,
+			max(nadupdncd)     nadupdncd         ,
+			max(nadbob)        nadbob            ,
+			max(nadbub)        nadbub            ,
+			group_concat(dongnm)        dongnm            ,
+			sum(maextdvcd)     maextdvcd         ,
+			max(maextdvcdnm)   maextdvcdnm       ,
+			sum(ldar)          ldar              ,
+			sum(star)          star              ,
+			sum(bdrt)          bdrt              ,
+			sum(grossar)       grossar           ,
+			sum(cprtesgrossar) cprtesgrossar     ,
+			sum(cprt)          cprt              ,
+			max(structcd)      structcd          ,
+			max(structcdnm)    structcdnm        ,
+			max(etstruct)      etstruct          ,
+			min(mauscd)        mauscd            ,
+			max(mauscdnm)      mauscdnm          ,
+			max(etus)          etus              ,
+			max(roofcd)        roofcd            ,
+			max(roofcdnm)      roofcdnm          ,
+			max(etroof)        etroof            ,
+			sum(famlycnt)      famlycnt          ,
+			sum(famliscnt)     famliscnt         ,
+			max(height)        height            ,
+			sum(uplevelcnt)    uplevelcnt        ,
+			sum(dnlevelcnt)    dnlevelcnt        ,
+			sum(elevcnt)       elevcnt           ,
+			sum(liftcnt)       liftcnt           ,
+			sum(extbdcnt)      extbdcnt          ,
+			sum(extbdar)       extbdar           ,
+			sum(totareaar)     totareaar         ,
+			sum(inmsnu)        inmsnu            ,
+			sum(inmsar)        inmsar            ,
+			sum(otmsnu)        otmsnu            ,
+			sum(otmsar)        otmsar            ,
+			sum(insfnu)        insfnu            ,
+			sum(insfar)        insfar            ,
+			sum(otsfnu)        otsfnu            ,
+			sum(otsfar)        otsfar            ,
+			max(apday)         apday             ,
+			max(strstday)      strstday          ,
+			max(permday)       permday           ,
+			max(apnuyr)        apnuyr            ,
+			max(apnuorgcd)     apnuorgcd         ,
+			max(apnuorgcdnm)   apnuorgcdnm       ,
+			max(apnudvcd)      apnudvcd          ,
+			max(apnudvcdnm)    apnudvcdnm        ,
+			max(hosu)          hosu              ,
+			max(enggdlevel)    enggdlevel        ,
+			max(engdnrt)       engdnrt           ,
+			max(engepipoint)   engepipoint       ,
+			max(ecobdlevel)    ecobdlevel        ,
+			max(ecobdpoint)    ecobdpoint        ,
+			max(aibdlevel)     aibdlevel         ,
+			max(aibdpoint)     aibdpoint         ,
+			max(credate)       credate           ,
+			count(1)		   bdcnt
+		from
+			tb_titlepart
+		where 1=1
+			and concat(sggcd,LWDCD) like CONCAT( #{searchKeyword},'%')
+			group by ldxy    
+         <if test="rowStart != null">
+             LIMIT ${rowStart-1}, 10
+         </if>
+    </select>     
+    
+    <select id="selectTitlePart" parameterType="String" resultType="gu.warehouse.WareTitlepartVO">
+		select
+			max(mgbdrgpk)      mgbdrgpk          ,
+			max(rgdvcd)        rgdvcd            ,
+			max(rgdvcdnm)      rgdvcdnm          ,
+			max(rgkdcd)        rgkdcd            ,
+			max(rgkdcdnm)      rgkdcdnm          ,
+			max(ldxy)          ldxy              ,
+			max(rdnmldxy)      rdnmldxy          ,
+			max(bdnm)          bdnm              ,
+			max(sggcd)         sggcd             ,
+			max(lwdcd)         lwdcd             ,
+			max(lddvcd)        lddvcd            ,
+			max(bun)           bun               ,
+			max(ji)            ji                ,
+			max(sldnm)         sldnm             ,
+			max(bl)            bl                ,
+			max(lt)            lt                ,
+			max(otldcnt)       otldcnt           ,
+			max(nadrdcd)       nadrdcd           ,
+			max(nadlwdcd)      nadlwdcd          ,
+			max(nadupdncd)     nadupdncd         ,
+			max(nadbob)        nadbob            ,
+			max(nadbub)        nadbub            ,
+			group_concat(dongnm)        dongnm            ,
+			sum(maextdvcd)     maextdvcd         ,
+			max(maextdvcdnm)   maextdvcdnm       ,
+			sum(ldar)          ldar              ,
+			sum(star)          star              ,
+			sum(bdrt)          bdrt              ,
+			sum(grossar)       grossar           ,
+			sum(cprtesgrossar) cprtesgrossar     ,
+			sum(cprt)          cprt              ,
+			max(structcd)      structcd          ,
+			max(structcdnm)    structcdnm        ,
+			max(etstruct)      etstruct          ,
+			min(mauscd)        mauscd            ,
+			max(mauscdnm)      mauscdnm          ,
+			max(etus)          etus              ,
+			max(roofcd)        roofcd            ,
+			max(roofcdnm)      roofcdnm          ,
+			max(etroof)        etroof            ,
+			sum(famlycnt)      famlycnt          ,
+			sum(famliscnt)     famliscnt         ,
+			max(height)        height            ,
+			sum(uplevelcnt)    uplevelcnt        ,
+			sum(dnlevelcnt)    dnlevelcnt        ,
+			sum(elevcnt)       elevcnt           ,
+			sum(liftcnt)       liftcnt           ,
+			sum(extbdcnt)      extbdcnt          ,
+			sum(extbdar)       extbdar           ,
+			sum(totareaar)     totareaar         ,
+			sum(inmsnu)        inmsnu            ,
+			sum(inmsar)        inmsar            ,
+			sum(otmsnu)        otmsnu            ,
+			sum(otmsar)        otmsar            ,
+			sum(insfnu)        insfnu            ,
+			sum(insfar)        insfar            ,
+			sum(otsfnu)        otsfnu            ,
+			sum(otsfar)        otsfar            ,
+			max(apday)         apday             ,
+			max(strstday)      strstday          ,
+			max(permday)       permday           ,
+			max(apnuyr)        apnuyr            ,
+			max(apnuorgcd)     apnuorgcd         ,
+			max(apnuorgcdnm)   apnuorgcdnm       ,
+			max(apnudvcd)      apnudvcd          ,
+			max(apnudvcdnm)    apnudvcdnm        ,
+			max(hosu)          hosu              ,
+			max(enggdlevel)    enggdlevel        ,
+			max(engdnrt)       engdnrt           ,
+			max(engepipoint)   engepipoint       ,
+			max(ecobdlevel)    ecobdlevel        ,
+			max(ecobdpoint)    ecobdpoint        ,
+			max(aibdlevel)     aibdlevel         ,
+			max(aibdpoint)     aibdpoint         ,
+			max(credate)       credate           ,
+			count(1)		   bdcnt
+		from
+			tb_titlepart
+		where 1=1
+			and mgbdrgpk = #{mgbdrgpk}
+			group by ldxy    
+    </select>      
+    
+    
+    <select id="selectTitlePartCount" resultType="Integer" parameterType="gu.common.SearchVO">
+		select count(1) from (
+			select ldxy
+			from 
+				tb_titlepart
+			where 1=1
+				and concat(sggcd,LWDCD) like CONCAT( #{searchKeyword},'%')
+				group by ldxy    
+		) w			
+    </select> 
+    
+
+
+    <select id="selectGrpSigunguList" parameterType="String" resultType="gu.common.ComboVO">
+		select 
+			sggucd combovalue, 
+			sggunm combooption
+		from tb_sggcod
+		where 1=1
+		and SIDOCD = #{sidocd}
+			group by sggucd
+			order by sggucd
+    </select> 
+
+
+    <select id="selectGrpDongList" parameterType="String" resultType="gu.common.ComboVO">
+		select dongcd combovalue, 
+			   dongnm combooption 
+		from logisnavi.tb_sggcod
+		where sggucd = #{sigungu}
+			group by dongcd
+			order by dongcd
+    </select> 
+
+</mapper>
+
