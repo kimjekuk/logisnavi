@@ -2,239 +2,915 @@ package gu.warehouse;
 
 public class WareInfoVO {
 // whama wahfl -- 창고정보와 층정보 결합
-    private String    
-    				whcode, 
-    				whname, 
-    				mpadrs, 
-    				kkompx, 
-    				kkompy, 
-    				ifsize, 
-    				ifstrt, 
-    				trcoty, 
-    				prprdy, 
-    				prstdy, 
-    				prusdy, 
-    				img001,
-					img002,
-					img003,
-					img004,
-					img005,
-					mpicif,
-					etcstr,	
-					mgbdrgpk,
-    				//-------------------------
-    				whflcd, 
-    				whflnm, 
-    				usetyp, 
-    				flmpay, 
-    				admpay, 
-    				pprice, 
-    				lsfrom, 
-    				cadf01, 
-    				dealty, 
-    				infday
+	   private String   
+       cate01, //카테고리1
+       cate02, //카테고리2
+       cate03, //카테고리3
+       ifarea, //용도지역
+       iftype, //주용도시설
+       ifstrt, //건축물구조
+       ifsize, //규모
+       mpsggc, //시군구코드
+       mpdngc, //법정동코드
+       mpabun, //번
+       mpadji, //지
+       whname, //건물명
+       whnama, //건물명_약칭
+       cofine, //투자사
+       cooper, //운용사
+       img001, //조감도1
+       img002, //조감도2
+       img003, //조감도3
+       avi001, //동영상1
+       avi002, //동영상2
+       mpicif, //인근IC
+       trcoty, //접안방식
+       trtrck, //차량(일반/화물/대형화물)
+       trdock, //접안가능층수
+       bacode, //인허가코드
+       brcode, //건축물대장코드
+       mpadrs, //대지위치
+       mpadro, //대지위치_도로명
+       prprdy, //허가일
+       prstdy, //착공일
+       prusdy, //사용승인일
+
+       goompx, //구글_경도
+       goompy, //구글_위도
+       navmpx, //네이버_경도
+       navmpy, //네이버_위도
+       kkompx, //카카오_경도
+       kkompy //카카오_위도       
+				;
+private Integer
+	  whcode, //건물번호
+      stflnu, //층수_지상
+      stblnu, //층수_지하
+      stpknu, //총주차면수
+      stmanu, //주건축물수
+      stetnu, //부속건축물수
+      stmeln, //승용기수
+      stheln //승강기수
 ;
-    private Integer szarea;
-    private Integer szposi; 
-    private Integer szstrt; 
-    private Integer flarea;
-	public String getWhcode() {
-		return whcode;
-	}
-	public void setWhcode(String whcode) {
-		this.whcode = whcode;
-	}
-	public String getWhname() {
-		return whname;
-	}
-	public void setWhname(String whname) {
-		this.whname = whname;
-	}
-	public String getMpadrs() {
-		return mpadrs;
-	}
-	public void setMpadrs(String mpadrs) {
-		this.mpadrs = mpadrs;
-	}
-	public String getKkompx() {
-		return kkompx;
-	}
-	public void setKkompx(String kkompx) {
-		this.kkompx = kkompx;
-	}
-	public String getKkompy() {
-		return kkompy;
-	}
-	public void setKkompy(String kkompy) {
-		this.kkompy = kkompy;
-	}
-	public String getIfsize() {
-		return ifsize;
-	}
-	public void setIfsize(String ifsize) {
-		this.ifsize = ifsize;
-	}
-	public String getIfstrt() {
-		return ifstrt;
-	}
-	public void setIfstrt(String ifstrt) {
-		this.ifstrt = ifstrt;
-	}
-	public String getTrcoty() {
-		return trcoty;
-	}
-	public void setTrcoty(String trcoty) {
-		this.trcoty = trcoty;
-	}
-	public String getPrprdy() {
-		return prprdy;
-	}
-	public void setPrprdy(String prprdy) {
-		this.prprdy = prprdy;
-	}
-	public String getPrstdy() {
-		return prstdy;
-	}
-	public void setPrstdy(String prstdy) {
-		this.prstdy = prstdy;
-	}
-	public String getPrusdy() {
-		return prusdy;
-	}
-	public void setPrusdy(String prusdy) {
-		this.prusdy = prusdy;
-	}
-	public String getImg001() {
-		return img001;
-	}
-	public void setImg001(String img001) {
-		this.img001 = img001;
-	}
-	public String getImg002() {
-		return img002;
-	}
-	public void setImg002(String img002) {
-		this.img002 = img002;
-	}
-	public String getImg003() {
-		return img003;
-	}
-	public void setImg003(String img003) {
-		this.img003 = img003;
-	}
-	public String getImg004() {
-		return img004;
-	}
-	public void setImg004(String img004) {
-		this.img004 = img004;
-	}
-	public String getImg005() {
-		return img005;
-	}
-	public void setImg005(String img005) {
-		this.img005 = img005;
-	}
-	public String getMpicif() {
-		return mpicif;
-	}
-	public void setMpicif(String mpicif) {
-		this.mpicif = mpicif;
-	}
-	public String getEtcstr() {
-		return etcstr;
-	}
-	public void setEtcstr(String etcstr) {
-		this.etcstr = etcstr;
-	}
-	public String getMgbdrgpk() {
-		return mgbdrgpk;
-	}
-	public void setMgbdrgpk(String mgbdrgpk) {
-		this.mgbdrgpk = mgbdrgpk;
-	}
-	public String getWhflcd() {
-		return whflcd;
-	}
-	public void setWhflcd(String whflcd) {
-		this.whflcd = whflcd;
-	}
-	public String getWhflnm() {
-		return whflnm;
-	}
-	public void setWhflnm(String whflnm) {
-		this.whflnm = whflnm;
-	}
-	public String getUsetyp() {
-		return usetyp;
-	}
-	public void setUsetyp(String usetyp) {
-		this.usetyp = usetyp;
-	}
-	public String getFlmpay() {
-		return flmpay;
-	}
-	public void setFlmpay(String flmpay) {
-		this.flmpay = flmpay;
-	}
-	public String getAdmpay() {
-		return admpay;
-	}
-	public void setAdmpay(String admpay) {
-		this.admpay = admpay;
-	}
-	public String getPprice() {
-		return pprice;
-	}
-	public void setPprice(String pprice) {
-		this.pprice = pprice;
-	}
-	public String getLsfrom() {
-		return lsfrom;
-	}
-	public void setLsfrom(String lsfrom) {
-		this.lsfrom = lsfrom;
-	}
-	public String getCadf01() {
-		return cadf01;
-	}
-	public void setCadf01(String cadf01) {
-		this.cadf01 = cadf01;
-	}
-	public String getDealty() {
-		return dealty;
-	}
-	public void setDealty(String dealty) {
-		this.dealty = dealty;
-	}
-	public String getInfday() {
-		return infday;
-	}
-	public void setInfday(String infday) {
-		this.infday = infday;
-	}
-	public Integer getSzarea() {
-		return szarea;
-	}
-	public void setSzarea(Integer szarea) {
-		this.szarea = szarea;
-	}
-	public Integer getSzposi() {
-		return szposi;
-	}
-	public void setSzposi(Integer szposi) {
-		this.szposi = szposi;
-	}
-	public Integer getSzstrt() {
-		return szstrt;
-	}
-	public void setSzstrt(Integer szstrt) {
-		this.szstrt = szstrt;
-	}
-	public Integer getFlarea() {
-		return flarea;
-	}
-	public void setFlarea(Integer flarea) {
-		this.flarea = flarea;
-	}
-    
+
+private double
+      szposi, //대지면적
+      szstrt, //건축면적
+      szarea, //연면적
+      sbcret, //건폐_율(%)
+      svlret, //용적_률(%)
+      sbcvlt  //용적_률_산정_연면적(㎡)
+
+;
+
+private String   
+	lsfnow  , //  입주시기(즉시여부)
+	lsfrom  , //  입주시기from
+	lstmto  , //  입주시기to
+	infday  , //  정보 업데이트일
+	status  , //  상태
+	delflg  , //  삭제 Flag
+	whflnm  , //  층명칭
+	whfuse  , //  용도(창고/사무실/하역장/램프/차량통로/공용면적)
+	whtemp  , //  온도(상온/냉장/냉동)
+	lsusr1  , //  입주업체1
+	lsusr2  , //  입주업체2
+	lsusr3  , //  입주업체3
+	cadf01  , //  도면01
+	cadf02  , //  도면02
+	cadf03  , //  도면03
+	avif01  , //  동영상01
+	avif02  , //  동영상02
+	avif03  , //  동영상03
+	dealty  , //  거래형태
+	whfudn  , //  지상지하
+	bapkcd  , //  인허가코드
+	brpkcd  , //  건축물대장코드
+	creusr  , //  등록자
+	updusr  , //  수정자
+	delusr  , //  삭제자
+	etcstr  , //  특이사항
+	credat  , //  등록일시
+	upddat   //  수정일시
+	; 
+
+private Integer
+	whfseq  ,  // 층고유번호
+	whflcd  ,  // 층번호
+	docknu  ,  // Dock수
+	flmpay  ,  // 임대료
+	admpay  ,  // 관리비
+	pprice  ,  // 평단가
+	lsdiva     // 최소분할면적
+	;
+
+private double
+	flhegt  ,   // 유효층고
+	flweit  ,   // 적재하중
+	flarea  ,   // 층면적(바닥)
+	flsesz  ,   // 층면적(공실)
+	fllmsz  ,   // 층면적(임대)
+    flszwa  ,   // (바닥면적)창고
+    flszof  ,   // (바닥면적)사무실
+    flszdo  ,   // (바닥면적)도크
+    flszmz  ,   // (바닥면적)메자닌
+    flslwa  ,   // (임대면적)창고
+    flslof  ,   // (임대면적)사무실
+    flsldo  ,   // (임대면적)도크
+    flslmz      // (임대면적)메자닌    	
+	;
+
+public String getCate01() {
+	return cate01;
+}
+
+public void setCate01(String cate01) {
+	this.cate01 = cate01;
+}
+
+public String getCate02() {
+	return cate02;
+}
+
+public void setCate02(String cate02) {
+	this.cate02 = cate02;
+}
+
+public String getCate03() {
+	return cate03;
+}
+
+public void setCate03(String cate03) {
+	this.cate03 = cate03;
+}
+
+public String getIfarea() {
+	return ifarea;
+}
+
+public void setIfarea(String ifarea) {
+	this.ifarea = ifarea;
+}
+
+public String getIftype() {
+	return iftype;
+}
+
+public void setIftype(String iftype) {
+	this.iftype = iftype;
+}
+
+public String getIfstrt() {
+	return ifstrt;
+}
+
+public void setIfstrt(String ifstrt) {
+	this.ifstrt = ifstrt;
+}
+
+public String getIfsize() {
+	return ifsize;
+}
+
+public void setIfsize(String ifsize) {
+	this.ifsize = ifsize;
+}
+
+public String getMpsggc() {
+	return mpsggc;
+}
+
+public void setMpsggc(String mpsggc) {
+	this.mpsggc = mpsggc;
+}
+
+public String getMpdngc() {
+	return mpdngc;
+}
+
+public void setMpdngc(String mpdngc) {
+	this.mpdngc = mpdngc;
+}
+
+public String getMpabun() {
+	return mpabun;
+}
+
+public void setMpabun(String mpabun) {
+	this.mpabun = mpabun;
+}
+
+public String getMpadji() {
+	return mpadji;
+}
+
+public void setMpadji(String mpadji) {
+	this.mpadji = mpadji;
+}
+
+public String getWhname() {
+	return whname;
+}
+
+public void setWhname(String whname) {
+	this.whname = whname;
+}
+
+public String getWhnama() {
+	return whnama;
+}
+
+public void setWhnama(String whnama) {
+	this.whnama = whnama;
+}
+
+public String getCofine() {
+	return cofine;
+}
+
+public void setCofine(String cofine) {
+	this.cofine = cofine;
+}
+
+public String getCooper() {
+	return cooper;
+}
+
+public void setCooper(String cooper) {
+	this.cooper = cooper;
+}
+
+public String getImg001() {
+	return img001;
+}
+
+public void setImg001(String img001) {
+	this.img001 = img001;
+}
+
+public String getImg002() {
+	return img002;
+}
+
+public void setImg002(String img002) {
+	this.img002 = img002;
+}
+
+public String getImg003() {
+	return img003;
+}
+
+public void setImg003(String img003) {
+	this.img003 = img003;
+}
+
+public String getAvi001() {
+	return avi001;
+}
+
+public void setAvi001(String avi001) {
+	this.avi001 = avi001;
+}
+
+public String getAvi002() {
+	return avi002;
+}
+
+public void setAvi002(String avi002) {
+	this.avi002 = avi002;
+}
+
+public String getMpicif() {
+	return mpicif;
+}
+
+public void setMpicif(String mpicif) {
+	this.mpicif = mpicif;
+}
+
+public String getTrcoty() {
+	return trcoty;
+}
+
+public void setTrcoty(String trcoty) {
+	this.trcoty = trcoty;
+}
+
+public String getTrtrck() {
+	return trtrck;
+}
+
+public void setTrtrck(String trtrck) {
+	this.trtrck = trtrck;
+}
+
+public String getTrdock() {
+	return trdock;
+}
+
+public void setTrdock(String trdock) {
+	this.trdock = trdock;
+}
+
+public String getBacode() {
+	return bacode;
+}
+
+public void setBacode(String bacode) {
+	this.bacode = bacode;
+}
+
+public String getBrcode() {
+	return brcode;
+}
+
+public void setBrcode(String brcode) {
+	this.brcode = brcode;
+}
+
+public String getMpadrs() {
+	return mpadrs;
+}
+
+public void setMpadrs(String mpadrs) {
+	this.mpadrs = mpadrs;
+}
+
+public String getMpadro() {
+	return mpadro;
+}
+
+public void setMpadro(String mpadro) {
+	this.mpadro = mpadro;
+}
+
+public String getPrprdy() {
+	return prprdy;
+}
+
+public void setPrprdy(String prprdy) {
+	this.prprdy = prprdy;
+}
+
+public String getPrstdy() {
+	return prstdy;
+}
+
+public void setPrstdy(String prstdy) {
+	this.prstdy = prstdy;
+}
+
+public String getPrusdy() {
+	return prusdy;
+}
+
+public void setPrusdy(String prusdy) {
+	this.prusdy = prusdy;
+}
+
+public String getGoompx() {
+	return goompx;
+}
+
+public void setGoompx(String goompx) {
+	this.goompx = goompx;
+}
+
+public String getGoompy() {
+	return goompy;
+}
+
+public void setGoompy(String goompy) {
+	this.goompy = goompy;
+}
+
+public String getNavmpx() {
+	return navmpx;
+}
+
+public void setNavmpx(String navmpx) {
+	this.navmpx = navmpx;
+}
+
+public String getNavmpy() {
+	return navmpy;
+}
+
+public void setNavmpy(String navmpy) {
+	this.navmpy = navmpy;
+}
+
+public String getKkompx() {
+	return kkompx;
+}
+
+public void setKkompx(String kkompx) {
+	this.kkompx = kkompx;
+}
+
+public String getKkompy() {
+	return kkompy;
+}
+
+public void setKkompy(String kkompy) {
+	this.kkompy = kkompy;
+}
+
+public Integer getWhcode() {
+	return whcode;
+}
+
+public void setWhcode(Integer whcode) {
+	this.whcode = whcode;
+}
+
+public Integer getStflnu() {
+	return stflnu;
+}
+
+public void setStflnu(Integer stflnu) {
+	this.stflnu = stflnu;
+}
+
+public Integer getStblnu() {
+	return stblnu;
+}
+
+public void setStblnu(Integer stblnu) {
+	this.stblnu = stblnu;
+}
+
+public Integer getStpknu() {
+	return stpknu;
+}
+
+public void setStpknu(Integer stpknu) {
+	this.stpknu = stpknu;
+}
+
+public Integer getStmanu() {
+	return stmanu;
+}
+
+public void setStmanu(Integer stmanu) {
+	this.stmanu = stmanu;
+}
+
+public Integer getStetnu() {
+	return stetnu;
+}
+
+public void setStetnu(Integer stetnu) {
+	this.stetnu = stetnu;
+}
+
+public Integer getStmeln() {
+	return stmeln;
+}
+
+public void setStmeln(Integer stmeln) {
+	this.stmeln = stmeln;
+}
+
+public Integer getStheln() {
+	return stheln;
+}
+
+public void setStheln(Integer stheln) {
+	this.stheln = stheln;
+}
+
+public double getSzposi() {
+	return szposi;
+}
+
+public void setSzposi(double szposi) {
+	this.szposi = szposi;
+}
+
+public double getSzstrt() {
+	return szstrt;
+}
+
+public void setSzstrt(double szstrt) {
+	this.szstrt = szstrt;
+}
+
+public double getSzarea() {
+	return szarea;
+}
+
+public void setSzarea(double szarea) {
+	this.szarea = szarea;
+}
+
+public double getSbcret() {
+	return sbcret;
+}
+
+public void setSbcret(double sbcret) {
+	this.sbcret = sbcret;
+}
+
+public double getSvlret() {
+	return svlret;
+}
+
+public void setSvlret(double svlret) {
+	this.svlret = svlret;
+}
+
+public double getSbcvlt() {
+	return sbcvlt;
+}
+
+public void setSbcvlt(double sbcvlt) {
+	this.sbcvlt = sbcvlt;
+}
+
+public String getLsfrom() {
+	return lsfrom;
+}
+
+public void setLsfrom(String lsfrom) {
+	this.lsfrom = lsfrom;
+}
+
+public String getLstmto() {
+	return lstmto;
+}
+
+public void setLstmto(String lstmto) {
+	this.lstmto = lstmto;
+}
+
+public String getInfday() {
+	return infday;
+}
+
+public void setInfday(String infday) {
+	this.infday = infday;
+}
+
+public String getStatus() {
+	return status;
+}
+
+public void setStatus(String status) {
+	this.status = status;
+}
+
+public String getDelflg() {
+	return delflg;
+}
+
+public void setDelflg(String delflg) {
+	this.delflg = delflg;
+}
+
+public String getWhflnm() {
+	return whflnm;
+}
+
+public void setWhflnm(String whflnm) {
+	this.whflnm = whflnm;
+}
+
+public String getWhfuse() {
+	return whfuse;
+}
+
+public void setWhfuse(String whfuse) {
+	this.whfuse = whfuse;
+}
+
+public String getWhtemp() {
+	return whtemp;
+}
+
+public void setWhtemp(String whtemp) {
+	this.whtemp = whtemp;
+}
+
+public String getLsusr1() {
+	return lsusr1;
+}
+
+public void setLsusr1(String lsusr1) {
+	this.lsusr1 = lsusr1;
+}
+
+public String getLsusr2() {
+	return lsusr2;
+}
+
+public void setLsusr2(String lsusr2) {
+	this.lsusr2 = lsusr2;
+}
+
+public String getLsusr3() {
+	return lsusr3;
+}
+
+public void setLsusr3(String lsusr3) {
+	this.lsusr3 = lsusr3;
+}
+
+public String getCadf01() {
+	return cadf01;
+}
+
+public void setCadf01(String cadf01) {
+	this.cadf01 = cadf01;
+}
+
+public String getCadf02() {
+	return cadf02;
+}
+
+public void setCadf02(String cadf02) {
+	this.cadf02 = cadf02;
+}
+
+public String getCadf03() {
+	return cadf03;
+}
+
+public void setCadf03(String cadf03) {
+	this.cadf03 = cadf03;
+}
+
+public String getAvif01() {
+	return avif01;
+}
+
+public void setAvif01(String avif01) {
+	this.avif01 = avif01;
+}
+
+public String getAvif02() {
+	return avif02;
+}
+
+public void setAvif02(String avif02) {
+	this.avif02 = avif02;
+}
+
+public String getAvif03() {
+	return avif03;
+}
+
+public void setAvif03(String avif03) {
+	this.avif03 = avif03;
+}
+
+public String getDealty() {
+	return dealty;
+}
+
+public void setDealty(String dealty) {
+	this.dealty = dealty;
+}
+
+public String getWhfudn() {
+	return whfudn;
+}
+
+public void setWhfudn(String whfudn) {
+	this.whfudn = whfudn;
+}
+
+public String getBapkcd() {
+	return bapkcd;
+}
+
+public void setBapkcd(String bapkcd) {
+	this.bapkcd = bapkcd;
+}
+
+public String getBrpkcd() {
+	return brpkcd;
+}
+
+public void setBrpkcd(String brpkcd) {
+	this.brpkcd = brpkcd;
+}
+
+public String getCreusr() {
+	return creusr;
+}
+
+public void setCreusr(String creusr) {
+	this.creusr = creusr;
+}
+
+public String getUpdusr() {
+	return updusr;
+}
+
+public void setUpdusr(String updusr) {
+	this.updusr = updusr;
+}
+
+public String getDelusr() {
+	return delusr;
+}
+
+public void setDelusr(String delusr) {
+	this.delusr = delusr;
+}
+
+public String getEtcstr() {
+	return etcstr;
+}
+
+public void setEtcstr(String etcstr) {
+	this.etcstr = etcstr;
+}
+
+public String getCredat() {
+	return credat;
+}
+
+public void setCredat(String credat) {
+	this.credat = credat;
+}
+
+public String getUpddat() {
+	return upddat;
+}
+
+public void setUpddat(String upddat) {
+	this.upddat = upddat;
+}
+
+public Integer getWhfseq() {
+	return whfseq;
+}
+
+public void setWhfseq(Integer whfseq) {
+	this.whfseq = whfseq;
+}
+
+public Integer getWhflcd() {
+	return whflcd;
+}
+
+public void setWhflcd(Integer whflcd) {
+	this.whflcd = whflcd;
+}
+
+public Integer getDocknu() {
+	return docknu;
+}
+
+public void setDocknu(Integer docknu) {
+	this.docknu = docknu;
+}
+
+public Integer getFlmpay() {
+	return flmpay;
+}
+
+public void setFlmpay(Integer flmpay) {
+	this.flmpay = flmpay;
+}
+
+public Integer getAdmpay() {
+	return admpay;
+}
+
+public void setAdmpay(Integer admpay) {
+	this.admpay = admpay;
+}
+
+public Integer getPprice() {
+	return pprice;
+}
+
+public void setPprice(Integer pprice) {
+	this.pprice = pprice;
+}
+
+public Integer getLsdiva() {
+	return lsdiva;
+}
+
+public void setLsdiva(Integer lsdiva) {
+	this.lsdiva = lsdiva;
+}
+
+public double getFlhegt() {
+	return flhegt;
+}
+
+public void setFlhegt(double flhegt) {
+	this.flhegt = flhegt;
+}
+
+public double getFlweit() {
+	return flweit;
+}
+
+public void setFlweit(double flweit) {
+	this.flweit = flweit;
+}
+
+public double getFlarea() {
+	return flarea;
+}
+
+public void setFlarea(double flarea) {
+	this.flarea = flarea;
+}
+
+public double getFllmsz() {
+	return fllmsz;
+}
+
+public void setFllmsz(double fllmsz) {
+	this.fllmsz = fllmsz;
+}
+
+public double getFlszwa() {
+	return flszwa;
+}
+
+public void setFlszwa(double flszwa) {
+	this.flszwa = flszwa;
+}
+
+public double getFlszof() {
+	return flszof;
+}
+
+public void setFlszof(double flszof) {
+	this.flszof = flszof;
+}
+
+public double getFlszdo() {
+	return flszdo;
+}
+
+public void setFlszdo(double flszdo) {
+	this.flszdo = flszdo;
+}
+
+public double getFlszmz() {
+	return flszmz;
+}
+
+public void setFlszmz(double flszmz) {
+	this.flszmz = flszmz;
+}
+
+public double getFlslwa() {
+	return flslwa;
+}
+
+public void setFlslwa(double flslwa) {
+	this.flslwa = flslwa;
+}
+
+public double getFlslof() {
+	return flslof;
+}
+
+public void setFlslof(double flslof) {
+	this.flslof = flslof;
+}
+
+public double getFlsldo() {
+	return flsldo;
+}
+
+public void setFlsldo(double flsldo) {
+	this.flsldo = flsldo;
+}
+
+public double getFlslmz() {
+	return flslmz;
+}
+
+public void setFlslmz(double flslmz) {
+	this.flslmz = flslmz;
+}
+
+public String getLsfnow() {
+	return lsfnow;
+}
+
+public void setLsfnow(String lsfnow) {
+	this.lsfnow = lsfnow;
+}
+
+public double getFlsesz() {
+	return flsesz;
+}
+
+public void setFlsesz(double flsesz) {
+	this.flsesz = flsesz;
+}
+
+
 }

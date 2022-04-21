@@ -29,9 +29,16 @@ public class FileUtil {
         }
             
         String filePath = LocaleMessage.getMessage("info.filePath");
-        String newName = getNewName();
+        String originFileName = uploadfile.getOriginalFilename();
+        String extName = originFileName.substring(originFileName.lastIndexOf(".") + 1);        
+        
+        String newName = getNewName()+"."+extName;
         filePath = getRealPath(filePath, newName);
-
+        
+        System.out.println("********************** : "+filePath);
+        System.out.println("********************** : "+originFileName);
+        System.out.println("********************** : "+extName);
+        
         saveFileOne(uploadfile, filePath, newName);
             
         FileVO filedo = new FileVO();
@@ -159,6 +166,7 @@ public class FileUtil {
     }
 
     public String getRealPath(String path, String filename) {
-        return path + filename.substring(0,4) + "/";
+//        return path + filename.substring(0,4) + "/";
+        return path + "/";
     }
 }

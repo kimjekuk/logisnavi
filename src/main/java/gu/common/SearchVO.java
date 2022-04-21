@@ -15,6 +15,7 @@ public class SearchVO extends PageVO  {
     private String searchExt7 = "";            // 검색 확장 필드 7
     private String searchExt8 = "";            // 검색 확장 필드 8 
     private String searchExt9 = "";            // 검색 확장 필드 9     
+
     private String userno;
 	public String getSearchKeyword() {
 		return searchKeyword;
@@ -93,7 +94,8 @@ public class SearchVO extends PageVO  {
 	}
 	public void setUserno(String userno) {
 		this.userno = userno;
-	}  
+	}
+
     
 }
  
