@@ -3,6 +3,1630 @@
 
 <mapper namespace="board">
 
+
+<!-- 창고정보 메인검색 -->         
+    <select id="selectWareListInfo"  parameterType="gu.common.SearchVO" resultType="gu.warehouse.WareInfoVO">
+		select
+				wh.whcode,
+				wh.cate01,
+				wh.cate02,
+				wh.cate03,
+				wh.whname,
+				wh.whnama,
+				wh.ifarea,
+				wh.iftype,
+				wh.ifstrt,
+				wh.ifsize,
+				wh.mpadrs,
+				wh.mpadro,
+				wh.mpsggc,
+				wh.mpdngc,
+				wh.mpabun,
+				wh.mpadji,
+				wh.trcoty,
+				wh.trtrck,
+				wh.trdock,
+				wh.szposi,
+				wh.szstrt,
+				wh.szarea,
+				wh.sbcret,
+				wh.svlret,
+				wh.sbcvlt,
+				wh.stflnu,
+				wh.stblnu,
+				wh.stpknu,
+				wh.stmanu,
+				wh.stetnu,
+				wh.stmeln,
+				wh.stheln,
+				wh.prprdy,
+				wh.prstdy,
+				wh.prusdy,
+				wh.cofine,
+				wh.cooper,
+				wh.img001,
+				wh.img002,
+				wh.img003,
+				wh.avi001,
+				wh.avi002,
+				wh.bacode,
+				wh.brcode,
+				wh.goompx,
+				wh.goompy,
+				wh.navmpx,
+				wh.navmpy,
+				wh.kkompx,
+				wh.kkompy,
+				wh.lmpsif,
+				wh.lmpsit,
+				wh.lmppay,
+				wh.lmpinc,
+				wh.lmpdps,
+				wh.lmpwhc,
+				wh.lmpdcc,
+				wh.lmpofc,
+				wh.lmppbc,
+				wh.lmpwtc,
+				wh.lmpupp,
+				wh.lmprtf,
+				wh.lmpadd,
+				
+				wh.cdvown,
+				wh.cdvsih,
+				wh.cdvsig,
+				wh.cdvgam,
+				wh.cdvsul,
+				wh.lmvown,
+				wh.lmvamc,
+				wh.lmvcom,
+				wh.lmvetc,
+				wh.catnam,
+				wh.catpos,
+				wh.cattel,
+				wh.cathpg,
+				wh.cateml,
+				wh.catcad,
+
+				wh.mpicif,
+				
+				wf.whfudn,
+				wf.whflcd,
+				wf.whflnm,
+				wf.whfuse,
+				wf.whtemp,
+				wf.flhegt,
+				wf.docknu,
+				wf.flweit,
+				wf.flarea,
+				wf.fllmyn,
+				wf.fllmsz,
+				
+				wf.flszwa,
+				wf.flszof,
+                wf.flszdo,
+                wf.flszmz,
+                wf.flslwa,
+                wf.flslof,
+				wf.flsldo,
+				wf.flslmz,
+				
+
+				wf.flsesz,
+
+				wf.flmpay,
+				wf.admpay,
+				wf.pprice,
+				wf.lsusr1,
+				wf.lsusr2,
+				wf.lsusr3,
+				
+				wf.lsfnow,
+				wf.lsfrom,
+				wf.lstmto,
+				wf.lsdiva,
+				wf.cadf01,
+				wf.cadf02,
+				wf.cadf03,
+				wf.avif01,
+				wf.avif02,
+				wf.avif03,
+				wf.dealty,
+				wf.etcstr,
+				wf.bapkcd,
+				wf.brpkcd,
+				wf.infday,
+				wf.status,
+				wf.credat,
+				wf.creusr,
+				wf.upddat,
+				wf.updusr,
+				wf.delflg,
+				wf.delusr,
+				wf.trdock,
+				wf.whfseq
+				
+		from
+			tab_wahama wh left outer join tab_wahafl wf
+			on wh.whcode = wf.whcode 
+		where 1=1
+			and (wh.whname LIKE CONCAT('%', #{searchKeyword},'%') or wh.mpadrs LIKE CONCAT('%', #{searchKeyword},'%'))
+		 	and (
+			 	case when wf.flsesz is null
+				 	then 1=1
+			 	else
+				 	( wf.flsesz between #{searchExt1} and #{searchExt2} )
+			 	end 
+			 	)
+	      <if test="searchExt3 != null and searchExt3 =='공실'">
+	    	  and wf.lsfnow not in ('임대완료') 
+	    	  and wf.status not in ('클로징', '계약진행')
+	      </if>
+	      <if test="searchExt4 != null and searchExt4 !=''">
+	    	  and wf.whfuse = #{searchExt4}  
+	      </if>
+	      <if test="searchExt5 != null and searchExt5 !='' and searchExt5 == '미포함'">
+			  and wh.delflg != 'Y'
+	      </if>
+	      <if test="searchExt5 != null and searchExt5 !='' and searchExt5 == '삭제창고만'">
+			  and wh.delflg = 'Y'
+	      </if>
+			order by wh.whcode desc, wf.whfudn asc, case wf.whfudn when '지하' then -wf.whflcd else wf.whflcd	end desc	      
+         <if test="rowStart != null">
+             LIMIT ${rowStart-1}, 10000
+         </if>		
+    </select>     
+
+<!-- 창고상세화면 (창고정보) --> 
+    <select id="selectWareOne" parameterType="String" resultType="gu.warehouse.WahamaVO">
+	   SELECT    
+			wm.whcode,
+			wm.cate01,
+			wm.cate02,
+			wm.cate03,
+			wm.whname,
+			wm.whnama,
+			wm.ifarea,
+			wm.iftype,
+			wm.ifstrt,
+			wm.ifsize,
+			wm.mpadrs,
+			wm.mpadro,
+			wm.mpsggc,
+			wm.mpdngc,
+			wm.mpabun,
+			wm.mpadji,
+			wm.trcoty,
+			wm.trtrck,
+			wm.trdock,
+			wm.szposi,
+			wm.szstrt,
+			wm.szarea,
+			wm.sbcret,
+			wm.svlret,
+			wm.sbcvlt,
+			wm.stflnu,
+			wm.stblnu,
+			wm.stpknu,
+			wm.stmanu,
+			wm.stetnu,
+			wm.stmeln,
+			wm.stheln,
+			wm.prprdy,
+			wm.prstdy,
+			wm.prusdy,
+			wm.cofine,
+			wm.cooper,
+			wm.img001,
+			wm.img002,
+			wm.img003,
+			wm.avi001,
+			wm.avi002,
+			wm.etcstr,
+			wm.bacode,
+			wm.brcode,
+			wm.goompx,
+			wm.goompy,
+			wm.navmpx,
+			wm.navmpy,
+			wm.kkompx,
+			wm.kkompy,
+			
+			wm.lmpsif,
+			wm.lmpsit,
+			wm.lmppay,
+			wm.lmpinc,
+			wm.lmpdps,
+			wm.lmpwhc,
+			wm.lmpdcc,
+			wm.lmpofc,
+			wm.lmppbc,
+			wm.lmpwtc,
+			wm.lmpupp,
+			wm.lmprtf,
+			wm.lmpadd,
+			
+			wm.cdvown,
+			wm.cdvsih,
+			wm.cdvsig,
+			wm.cdvgam,
+			wm.cdvsul,
+			wm.lmvown,
+			wm.lmvamc,
+			wm.lmvcom,
+			wm.lmvetc,
+			wm.catnam,
+			wm.catpos,
+			wm.cattel,
+			wm.cathpg,			
+			wm.cateml,			
+			wm.catcad,			
+			
+			wm.mpicif,
+			wm.status,
+			wm.credat,
+			wm.creusr,
+			wm.upddat,
+			wm.updusr,
+			wm.delflg,
+			wm.delusr
+          FROM tab_wahama wm
+          where 1=1
+    	  AND   wm.whcode = #{whcode}
+    </select> 
+
+<!-- 창고상세화면 (창고 층정보) --> 
+    <select id="selectWareFloor"  parameterType="String"  resultType="gu.warehouse.WahaflVO">
+		select
+			whfseq,
+			whcode,
+			whfudn,
+			whflcd,
+			whflnm,
+			whfuse,
+			whtemp,
+			flhegt,
+			docknu,
+			flweit,
+			flarea,
+			fllmyn,
+			fllmsz,
+			flszwa,
+			flszof,
+			flszdo,
+			flszmz,
+			flslwa,
+			flslof,
+			flsldo,
+			flslmz,
+			flmpay,
+			admpay,
+			pprice,
+			lsusr1,
+			lsusr2,
+			lsusr3,
+			lsfnow,
+			lsfrom,
+			lstmto,
+			lsdiva,
+			cadf01,
+			cadf02,
+			cadf03,
+			avif01,
+			avif02,
+			avif03,
+			dealty,
+			etcstr,
+			bapkcd,
+			brpkcd,
+			infday,
+			trdock,
+			status,
+
+			flsewa,
+			flsedo,
+			flseof,
+			flsemz,
+			flsesz,
+			pricyn,
+						
+			credat,
+			creusr,
+			upddat,
+			updusr,
+			delflg,
+			delusr
+		from tab_wahafl 
+		where 1=1
+		and	whcode = #{whcode} 
+		order by whcode desc, whfudn asc, case whfudn when '지하' then -whflcd else whflcd end desc	      
+    </select>     
+
+
+<!-- 창고 인허가정보 조회(리스트) --> 
+    <select id="selectBasisList"  parameterType="gu.common.SearchVO" resultType="gu.warehouse.ApBasisOulnInfoVO">
+		select 
+			bas.mgmPmsrgstPk,
+			bas.platPlc,
+			bas.bldNm,
+			bas.sigunguCd,
+			bas.bjdongCd,
+			bas.platGbCd,
+			bas.bun,
+			bas.ji,
+			bas.splotNm,
+			bas.block,
+			bas.lot,
+			bas.jimokCdNm,
+			bas.jiyukCdNm,
+			bas.jiguCdNm,
+			bas.guyukCdNm,
+			bas.jimokCd,
+			bas.jiyukCd,
+			bas.jiguCd,
+			bas.guyukCd,
+			bas.archGbCdNm,
+			bas.archGbCd,
+			round((ifnull(bas.platArea,0) * 0.3025),2) as platArea,
+			round((ifnull(bas.archArea,0) * 0.3025),2) as archArea,
+			bas.bcRat,
+			round((ifnull(bas.totArea,0) * 0.3025),2) as totArea,
+			round((ifnull(bas.vlRatEstmTotArea,0) * 0.3025),2) as vlRatEstmTotArea,
+			bas.vlRat,
+			bas.mainBldCnt,
+			bas.atchBldDongCnt,
+			bas.mainPurpsCd,
+			bas.mainPurpsCdNm,
+			bas.hhldCnt,
+			bas.hoCnt,
+			bas.fmlyCnt,
+			bas.totPkngCnt,
+			bas.stcnsSchedDay,
+			bas.stcnsDelayDay,
+			bas.realStcnsDay,
+			bas.archPmsDay,
+			bas.useAprDay,
+			bas.crtnDay,
+			(select max(wm.whcode) from tab_wahama wm where wm.mpadrs = bas.platPlc) as registedflg
+		from tab_apbasisoulninfo bas 
+		where 1=1
+		and (bas.bldNm LIKE CONCAT('%', #{searchKeyword},'%') or bas.platPlc LIKE CONCAT('%', #{searchKeyword},'%'))
+		and bas.totArea between #{searchExt1} and #{searchExt2}
+		and bas.realStcnsDay >= #{searchExt3}
+      <if test="searchExt4 == 'sudo' ">
+    	  and ((platPlc like '서울%') or (platPlc like '인천%') or (platPlc like '경기%'))
+      </if>
+      <if test="searchExt4 == 'notsudo' ">
+    	  and not ((platPlc like '서울%') or (platPlc like '인천%') or (platPlc like '경기%'))
+      </if>
+      <if test="searchExt5 == 'is_useAprDay' ">
+    	  and useAprDay is not null
+      </if>
+      <if test="searchExt5 == 'null_useAprDay' ">
+    	  and useAprDay is null
+      </if>
+      <if test="searchExt6 != null and searchExt6 !='' ">
+      	  and archGbCdNm = #{searchExt6}
+      </if>
+      <if test="searchExt7 != null and searchExt7 !='' ">
+		order by ${searchExt7} ${searchExt8}
+      </if>
+       <if test="rowStart != null">
+           LIMIT ${rowStart-1}, 10000
+	   </if>		
+    </select>    
+
+ 
+<!--  창고 건축물대장 조회(리스트)  --> 
+    <select id="selectBrtitleList"  parameterType="gu.common.SearchVO" resultType="gu.warehouse.BrTitleInfoVO">
+		select
+			mgmBldrgstPk,
+			regstrGbCd,
+			regstrGbCdNm,
+			regstrKindCd,
+			regstrKindCdNm,
+			platPlc,
+			newPlatPlc,
+			bldNm,
+			sigunguCd,
+			bjdongCd,
+			platGbCd,
+			bun,
+			ji,
+			splotNm,
+			block,
+			lot,
+			bylotCnt,
+			naRoadCd,
+			naBjdongCd,
+			naUgrndCd,
+			naMainBun,
+			naSubBun,
+			dongNm,
+			mainAtchGbCd,
+			mainAtchGbCdNm,
+			round((ifnull(platArea,0) * 0.3025),2) as platArea,
+			round((ifnull(archArea,0) * 0.3025),2) as archArea,
+			bcRat,
+			round((ifnull(totArea,0) * 0.3025),2) as totArea,
+			round((ifnull(vlRatEstmTotArea,0) * 0.3025),2) as vlRatEstmTotArea,
+			vlRat,
+			strctCd,
+			strctCdNm,
+			etcStrct,
+			mainPurpsCd,
+			mainPurpsCdNm,
+			etcPurps,
+			roofCd,
+			roofCdNm,
+			etcRoof,
+			hhldCnt,
+			fmlyCnt,
+			heit,
+			grndFlrCnt,
+			ugrndFlrCnt,
+			rideUseElvtCnt,
+			emgenUseElvtCnt,
+			atchBldCnt,
+			atchBldArea,
+			totDongTotArea,
+			indrMechUtcnt,
+			indrMechArea,
+			oudrMechUtcnt,
+			oudrMechArea,
+			indrAutoUtcnt,
+			indrAutoArea,
+			oudrAutoUtcnt,
+			oudrAutoArea,
+			pmsDay,
+			stcnsDay,
+			useAprDay,
+			pmsnoYear,
+			pmsnoKikCd,
+			pmsnoKikCdNm,
+			pmsnoGbCd,
+			pmsnoGbCdNm,
+			hoCnt,
+			engrGrade,
+			engrRat,
+			engrEpi,
+			gnBldGrade,
+			gnBldCert,
+			itgBldGrade,
+			itgBldCert,
+			crtnDay,
+			rserthqkDsgnApplyYn,
+			rserthqkAblty,
+			(select max(wm.whcode) from tab_wahama wm where wm.mpadrs = br.platPlc) as registedflg
+		from
+			tab_brtitleinfo br
+		where 1=1
+		and (bldNm LIKE CONCAT('%', #{searchKeyword},'%') or platPlc LIKE CONCAT('%', #{searchKeyword},'%'))
+		and totArea between #{searchExt1} and #{searchExt2}
+		and useAprDay >= #{searchExt3}
+      <if test="searchExt4 == 'sudo' ">
+    	  and ((platPlc like '서울%') or (platPlc like '인천%') or (platPlc like '경기%'))
+      </if>
+      <if test="searchExt4 == 'notsudo' ">
+    	  and not ((platPlc like '서울%') or (platPlc like '인천%') or (platPlc like '경기%'))
+      </if>
+      <if test="searchExt7 != null and searchExt7 !='' ">
+		order by ${searchExt7} ${searchExt8}
+      </if>
+       <if test="rowStart != null">
+           LIMIT ${rowStart-1}, 10000
+	   </if>		
+    </select>     
+    
+
+<!--   창고 인허가정보 층별조회(리스트)   --> 
+    <select id="selectBasisFloorList"   parameterType="java.util.Map"  resultType="gu.warehouse.ApBasisOulnInfoFloorVO">	
+		select
+			mgmFlrOulnPk,
+			mgmDongOulnPk,
+			mgmPmsrgstPk,
+			platPlc,
+			bldNm,
+			sigunguCd,
+			bjdongCd,
+			platGbCd,
+			bun,
+			ji,
+			splotNm,
+			block,
+			lot,
+			strctCd,
+			strctCdNm,
+			mainPurpsCd,
+			mainPurpsCdNm,
+			flrNo,
+			round((ifnull(flrArea,0) * 0.3025),2) as flrArea,
+			flrGbCd,
+			flrGbCdNm,
+			archGbCd,
+			archGbCdNm,
+			crtnDay
+		from
+			tab_apbasisoulninfo_floor
+		where 1=1
+		and mgmPmsrgstPk in
+		    <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+		        #{item}
+		    </foreach>  	
+		order by flrGbCd desc, case flrGbCd when'10' then -flrNo else flrNo end desc  		
+    </select>     
+
+<!--   창고 건축물대장 층별조회(리스트)   --> 
+    <select id="selectBrtitleFloorList"   parameterType="java.util.Map"  resultType="gu.warehouse.BrTitleInfoFloorVO">	
+		select
+			mgmBldrgstPk,
+			platPlc,
+			newPlatPlc,
+			bldNm,
+			sigunguCd,
+			bjdongCd,
+			platGbCd,
+			bun,
+			ji,
+			splotNm,
+			block,
+			lot,
+			naRoadCd,
+			naBjdongCd,
+			naUgrndCd,
+			naMainBun,
+			naSubBun,
+			dongNm,
+			flrGbCd,
+			flrGbCdNm,
+			flrNo,
+			flrNoNm,
+			strctCd,
+			strctCdNm,
+			etcStrct,
+			mainPurpsCd,
+			mainPurpsCdNm,
+			etcPurps,
+			round((ifnull(area,0) * 0.3025),2) as area,
+			mainAtchGbCd,
+			mainAtchGbCdNm,
+			areaExctYn,
+			crtnDay
+		from
+			tab_brtitleinfo_floor
+				where 1=1
+		and mgmBldrgstPk in
+		    <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+		        #{item}
+		    </foreach>  	
+		order by flrGbCd desc, case flrGbCd when'10' then -flrNo else flrNo end desc  		
+    </select>     
+
+<!-- 임차의뢰 관리페이지(등록페이지 표시) -->    
+    <select id="selectReqlmOne"  parameterType="String" resultType="gu.warehouse.ReqLmInfo">
+		select
+			reqseq,
+			requsr,
+			reqcod,
+			reqday,
+			reqtim,
+			rqifcd,
+			rqiusr,
+			rqicop,
+			rqiman,
+			rqimai,
+			rqitel,
+			rqbzcr,
+			lmcopr,
+			lmsect,
+			lmitem,
+			lmcont,
+			lmsitr,
+			lmtelp,
+			lmemal,
+			lmcapi,
+			lmbzcr,
+			lmppse,
+			lmpetc,
+			lmtemp,
+			lmsize,
+			lmtemp2,
+			lmsize2,
+			lmtemp3,
+			lmsize3,
+			lmtemp4,
+			lmsize4,
+			lmtemp5,
+			lmsize5,
+			larea0,
+			larea1,
+			larea2,
+			larea3,
+			lminow,
+			lmfrom,
+			lmterm,
+			rqstat,
+			stretc,
+			credat,
+			creusr,
+			upddat,
+			updusr,
+			delflg,
+			delusr
+		from
+			tab_reqlm_mng
+			where 1=1
+			and reqseq = #{reqseq}
+    </select>
+
+<!-- 임차접수정보 수정 -->         
+    <update id="updateReqLm" parameterType="gu.warehouse.ReqLmInfo">
+			update
+				tab_reqlm_mng
+			set
+				requsr = #{requsr},
+				reqcod = #{reqcod},
+				reqday = #{reqday},
+				reqtim = #{reqtim},
+				rqifcd = #{rqifcd},
+				rqiusr = #{rqiusr},
+				rqicop = #{rqicop},
+				rqiman = #{rqiman},
+				rqimai = #{rqimai},
+				rqitel = #{rqitel},
+				rqbzcr = #{rqbzcr},
+				lmcopr = #{lmcopr},
+				lmsect = #{lmsect},
+				lmitem = #{lmitem},
+				lmcont = #{lmcont},
+				lmsitr = #{lmsitr},
+				lmtelp = #{lmtelp},
+				lmemal = #{lmemal},
+				lmcapi = #{lmcapi},
+				lmbzcr = #{lmbzcr},
+				lmppse = #{lmppse},
+				lmpetc = #{lmpetc},
+				lmtemp = #{lmtemp},
+				lmsize = #{lmsize},
+				lmtemp2 = #{lmtemp2},
+				lmsize2 = #{lmsize2},
+				lmtemp3 = #{lmtemp3},
+				lmsize3 = #{lmsize3},
+				lmtemp4 = #{lmtemp4},
+				lmsize4 = #{lmsize4},
+				lmtemp5 = #{lmtemp5},
+				lmsize5 = #{lmsize5},
+				larea0 = #{larea0},
+				larea1 = #{larea1},
+				larea2 = #{larea2},
+				larea3 = #{larea3},
+				lminow = #{lminow},
+				lmfrom = #{lmfrom},
+				lmterm = #{lmterm},
+				rqstat = #{rqstat},
+				stretc = #{stretc},
+				credat = #{credat},
+				creusr = #{creusr},
+				upddat = NOW(),
+				updusr = #{updusr},
+				delflg = #{delflg},
+				delusr = #{delusr}
+			where 1=1
+			and reqseq = #{reqseq}
+			;    
+    </update> 
+
+<!-- 임차접수정보 등록 -->    
+    <insert id="insertReqLm" parameterType="gu.warehouse.ReqLmInfo" >
+			INSERT INTO tab_reqlm_mng (REQSEQ, REQUSR, REQCOD, REQDAY, REQTIM, RQIFCD, RQIUSR, RQICOP, RQIMAN, RQIMAI, RQITEL, RQBZCR
+			                         , LMCOPR, LMSECT, LMITEM, LMCONT, LMSITR, LMTELP, LMEMAL, LMCAPI, LMBZCR, LMPPSE, LMPETC
+			                         , LMTEMP, LMSIZE, LMTEMP2, LMSIZE2, LMTEMP3, LMSIZE3, LMTEMP4, LMSIZE4, LMTEMP5, LMSIZE5
+			                         , LAREA0, LAREA1, LAREA2, LAREA3, LMINOW, LMFROM, LMTERM, rqstat, STRETC, CREDAT
+			                         , CREUSR, UPDDAT, UPDUSR, DELFLG, DELUSR) 
+			VALUES (#{reqseq}, #{requsr}, #{reqcod}, #{reqday}, #{reqtim}, #{rqifcd}, #{rqiusr}, #{rqicop}, #{rqiman}, #{rqimai}, #{rqitel}, #{rqbzcr}
+			                         , #{lmcopr}, #{lmsect}, #{lmitem}, #{lmcont}, #{lmsitr}, #{lmtelp}, #{lmemal}, #{lmcapi}, #{lmbzcr}, #{lmppse}, #{lmpetc}
+			                         , #{lmtemp}, #{lmsize}, #{lmtemp2}, #{lmsize2}, #{lmtemp3}, #{lmsize3}, #{lmtemp4}, #{lmsize4}, #{lmtemp5}, #{lmsize5}
+			                         , #{larea0}, #{larea1}, #{larea2}, #{larea3}, #{lminow}, #{lmfrom}, #{lmterm}, #{rqstat}, #{stretc}, NOW()
+			                         , #{creusr}, #{upddat}, #{updusr}, #{delflg}, #{delusr})
+    </insert>        
+
+<!-- 임차접수정보 리스트 -->    
+    <select id="selectReqLmList"  parameterType="gu.common.SearchVO" resultType="gu.warehouse.ReqLmInfo">
+		select
+			reqseq,
+			requsr,
+			reqcod,
+			reqday,
+			reqtim,
+			rqifcd,
+			rqiusr,
+			rqicop,
+			rqiman,
+			rqimai,
+			rqitel,
+			rqbzcr,
+			lmcopr,
+			lmsect,
+			lmitem,
+			lmcont,
+			lmsitr,
+			lmtelp,
+			lmemal,
+			lmcapi,
+			lmbzcr,
+			lmppse,
+			lmpetc,
+			lmtemp,
+			lmsize,
+			lmtemp2,
+			lmsize2,
+			lmtemp3,
+			lmsize3,
+			lmtemp4,
+			lmsize4,
+			lmtemp5,
+			lmsize5,
+			larea0,
+			larea1,
+			larea2,
+			larea3,
+			lminow,
+			lmfrom,
+			lmterm,
+			rqstat,
+			stretc,
+			credat,
+			creusr,
+			upddat,
+			updusr,
+			delflg,
+			delusr
+		from
+			tab_reqlm_mng
+		order by REQSEQ desc
+    </select>
+     
+<!-- 창고정보등록페이지 등록정보표시(창고정보) -->    
+   <select id="selectWahamaOne" parameterType="String" resultType="gu.warehouse.WahamaVO">
+			select
+				whcode,
+				cate01,
+				cate02,
+				cate03,
+				whname,
+				whnama,
+				ifarea,
+				iftype,
+				ifstrt,
+				ifsize,
+				mpadrs,
+				mpadro,
+				mpsggc,
+				mpdngc,
+				mpabun,
+				mpadji,
+				trcoty,
+				trtrck,
+				trdock,
+				szposi,
+				szstrt,
+				szarea,
+				sbcret,
+				svlret,
+				sbcvlt,
+				stflnu,
+				stblnu,
+				stpknu,
+				stmanu,
+				stetnu,
+				stmeln,
+				stheln,
+				prprdy,
+				prstdy,
+				prusdy,
+				cofine,
+				cooper,
+				img001,
+				img002,
+				img003,
+				avi001,
+				avi002,
+				etcstr,
+				bacode,
+				brcode,
+				goompx,
+				goompy,
+				navmpx,
+				navmpy,
+				kkompx,
+				kkompy,
+				mpicif,
+				status,
+				lmpsif,
+				lmpsit,
+				lmppay,
+				lmpinc,
+				lmpdps,
+				lmpwhc,
+				lmpdcc,
+				lmpofc,
+				lmppbc,
+				lmpwtc,
+				lmpupp,
+				lmprtf,
+				lmpadd,
+			    cdvown,
+			    cdvsih,
+			    cdvsig,
+			    cdvgam,
+			    cdvsul,
+			    lmvown,
+			    lmvamc,
+			    lmvcom,
+			    lmvetc,
+			    catnam,
+			    catpos,
+			    cattel,
+			    cathpg,			
+			    cateml,			
+			    catcad,			
+				credat,
+				creusr,
+				upddat,
+				updusr,
+				delflg,
+				delusr
+			from
+				tab_wahama
+			where 1=1
+			and whcode = #{whcode}
+    </select> 
+
+<!-- 창고정보등록페이지 등록정보표시(층별정보) -->    
+    <select id="selectWahaflList" parameterType="String" resultType="gu.warehouse.WahaflVO">
+		select
+			whcode,
+			whfudn,
+			whflcd,
+			whflnm,
+			whfuse,
+			whtemp,
+			flhegt,
+			docknu,
+			flweit,
+			flarea,
+			fllmyn,
+			fllmsz,
+			flszwa,
+			flszof,
+			flszdo,
+			flszmz,
+			flslwa,
+			flslof,
+			flsldo,
+			flslmz,
+			
+			flsewa,
+			flsedo,
+			flseof,
+			flsemz,
+			flsesz,
+			pricyn,
+			
+			flmpay,
+			admpay,
+			pprice,
+			lsusr1,
+			lsusr2,
+			lsusr3,
+			
+			lsfnow,
+			lsfrom,
+			lstmto,
+			lsdiva,
+			cadf01,
+			cadf02,
+			cadf03,
+			avif01,
+			avif02,
+			avif03,
+			dealty,
+			etcstr,
+			bapkcd,
+			brpkcd,
+			infday,
+			status,
+			credat,
+			creusr,
+			upddat,
+			updusr,
+			delflg,
+			delusr,
+			whfseq,
+			trdock
+		from
+			tab_wahafl
+		where 1=1
+		and whcode = #{whcode}
+		order by whcode desc, whfudn asc, case whfudn when '지하' then -whflcd else whflcd end desc	 		
+    </select>
+
+<!-- 창고정보등록페이지 인허가기반 정보표시(창고정보) -->    
+    <select id="selectWahamaBaOne" parameterType="String" resultType="gu.warehouse.WahamaVO">
+			select
+				0 as whcode,
+				'' as cate01,
+				'' as cate02,
+				'' as cate03,
+				bldNm as whname,
+				'' as whnama,
+				'' as ifarea,
+				'' as iftype,
+				'' as ifstrt,
+				'' as ifsize,
+				platPlc as mpadrs,
+				'' as mpadro,
+				sigunguCd as mpsggc,
+				bjdongCd as mpdngc,
+				bun as mpabun,
+				ji as mpadji,
+				'' as trcoty,
+				'' as trtrck,
+				'' as trdock,
+				round((ifnull(platArea,0) * 0.3025),2) as szposi,
+				round((ifnull(archArea,0) * 0.3025),2) as szstrt,
+				round((ifnull(totArea,0) * 0.3025),2) as szarea,
+				round(ifnull(bcRat,0),1) as sbcret,
+				round(ifnull(vlRat,0),1) as svlret,
+				round(ifnull(vlRatEstmTotArea,0),1) as sbcvlt,
+				0 as stflnu,
+				0 as stblnu,
+				0 as stpknu,
+				0 as stmanu,
+				0 as stetnu,
+				0 as stmeln,
+				0 as stheln,
+				'' as prprdy,
+				'' as prstdy,
+				useAprDay as prusdy,
+				'' as cofine,
+				'' as cooper,
+				'' as img001,
+				'' as img002,
+				'' as img003,
+				'' as avi001,
+				'' as avi002,
+				'' as etcstr,
+				mgmpmsrgstpk as bacode,
+				'' as brcode,
+				'' as goompx,
+				'' as goompy,
+				'' as navmpx,
+				'' as navmpy,
+				'' as kkompx,
+				'' as kkompy,
+				'' as mpicif,
+				'' as status,
+				'' as credat,
+				'' as creusr,
+				'' as upddat,
+				'' as updusr,
+				'' as delflg,
+				'' as delusr
+			from
+				tab_apbasisoulninfo tb 
+			where 1=1
+			and mgmpmsrgstpk = #{mgmpmsrgstpk}
+    </select> 
+    
+<!-- 창고정보등록페이지 인허가기반 정보표시(층별정보) -->    
+    <select id="selectWahaflBaList" parameterType="String" resultType="gu.warehouse.WahaflVO">
+	select
+			0 as whcode,
+			flrGbCdNm as whfudn,
+			flrNo as whflcd,
+			mainPurpsCdNm as whflnm,
+			'' as whfuse,
+			'' as whtemp,
+			0 as flhegt,
+			0 as docknu,
+			0 as flweit,
+			round((ifnull(flrArea,0) * 0.3025),2) as flarea,
+			'' as fllmyn,
+			round((ifnull(flrArea,0) * 0.3025),2) as fllmsz,
+			0 as flszwa,
+			0 as flszof,
+			0 as flszdo,
+			0 as flszmz,
+			0 as flslwa,
+			0 as flslof,
+			0 as flsldo,
+			0 as flslmz,
+			0 as flsewa,			
+			0 as flsedo,			
+			0 as flseof,			
+			0 as flsemz,			
+			0 as flsesz,			
+			'' as pricyn,			
+			0 as flmpay,
+			0 as admpay,
+			0 as pprice,
+			'' as lsusr1,
+			'' as lsusr2,
+			'' as lsusr3,
+			'' as lsfnow,
+			'' as lsfrom,
+			'' as lstmto,
+			0 as lsdiva,
+			'' as cadf01,
+			'' as cadf02,
+			'' as cadf03,
+			'' as avif01,
+			'' as avif02,
+			'' as avif03,
+			'' as dealty,
+			'' as etcstr,
+			mgmpmsrgstpk as bapkcd,
+			'' as brpkcd,
+			'' as infday,
+			'' as status,
+			'' as credat,
+			'' as creusr,
+			'' as upddat,
+			'' as updusr,
+			'' as delflg,
+			'' as delusr
+		from
+			tab_apbasisoulninfo_floor
+		where 1=1
+		and mgmpmsrgstpk = #{mgmpmsrgstpk}
+		order by flrGbCd desc, case flrGbCd when'10' then -flrNo else flrNo end desc  		
+    </select>    
+    
+    
+<!-- 창고정보등록페이지 표제부기반 정보표시(창고정보) -->    
+    <select id="selectWahamaBrOne" parameterType="String" resultType="gu.warehouse.WahamaVO">
+			select
+				0 as whcode,
+				'' as cate01,
+				'' as cate02,
+				'' as cate03,
+				bldNm as whname,
+				'' as whnama,
+				'' as ifarea,
+				'' as iftype,
+				strctCdNm as ifstrt,
+				'' as ifsize,
+				platPlc as mpadrs,
+				'' as mpadro,
+				sigunguCd as mpsggc,
+				bjdongCd as mpdngc,
+				bun as mpabun,
+				ji as mpadji,
+				'' as trcoty,
+				'' as trtrck,
+				'' as trdock,
+				round((ifnull(platArea,0) * 0.3025),2) as szposi,
+				round((ifnull(archArea,0) * 0.3025),2) as szstrt,
+				round((ifnull(totArea,0) * 0.3025),2) as szarea,
+				round(ifnull(bcRat,0),1) as sbcret,
+				round(ifnull(vlRat,0),1) as svlret,
+				round(ifnull(vlRatEstmTotArea,0),1) as sbcvlt,
+				0 as stflnu,
+				0 as stblnu,
+				0 as stpknu,
+				0 as stmanu,
+				0 as stetnu,
+				0 as stmeln,
+				0 as stheln,
+				pmsDay as prprdy,
+				stcnsDay as prstdy,
+				useAprDay as prusdy,
+				'' as cofine,
+				'' as cooper,
+				'' as img001,
+				'' as img002,
+				'' as img003,
+				'' as avi001,
+				'' as avi002,
+				'' as etcstr,
+				'' as bacode,
+				mgmBldrgstPk as brcode,
+				'' as goompx,
+				'' as goompy,
+				'' as navmpx,
+				'' as navmpy,
+				'' as kkompx,
+				'' as kkompy,
+				'' as mpicif,
+				'' as status,
+				'' as credat,
+				'' as creusr,
+				'' as upddat,
+				'' as updusr,
+				'' as delflg,
+				'' as delusr
+			from
+				tab_brtitleinfo tb 
+			where 1=1
+			and mgmBldrgstPk = #{mgmBldrgstPk}
+    </select> 
+
+<!-- 창고정보등록페이지 표제부기반 정보표시(층별정보) -->    
+    <select id="selectWahaflBrList" parameterType="String" resultType="gu.warehouse.WahaflVO">
+		select
+			0 as whcode,
+			flrGbCdNm as whfudn,
+			flrNo as whflcd,
+			mainPurpsCdNm as whflnm,
+			' ' as whfuse,
+			' ' as whtemp,
+			0 as flhegt,
+			0 as docknu,
+			0 as flweit,
+			round((ifnull(area,0) * 0.3025),2) as flarea,
+			'' as fllmyn,
+			round((ifnull(area,0) * 0.3025),2) as fllmsz,
+			0 as flszwa,
+			0 as flszof,
+			0 as flszdo,
+			0 as flszmz,
+			0 as flslwa,
+			0 as flslof,
+			0 as flsldo,
+			0 as flslmz,			
+			0 as flsewa,			
+			0 as flsedo,			
+			0 as flseof,			
+			0 as flsemz,			
+			0 as flsesz,			
+			'' as pricyn,			
+			0 as flmpay,
+			0 as admpay,
+			0 as pprice,
+			' ' as lsusr1,
+			' ' as lsusr2,
+			' ' as lsusr3,
+			' ' as lsfnow,
+			' ' as lsfrom,
+			' ' as lstmto,
+			0 as lsdiva,
+			' ' as cadf01,
+			' ' as cadf02,
+			' ' as cadf03,
+			' ' as avif01,
+			' ' as avif02,
+			' ' as avif03,
+			' ' as dealty,
+			' ' as etcstr,
+			' ' as bapkcd,
+			mgmBldrgstPk as brpkcd,
+			' ' as infday,
+			' ' as status,
+			' ' as credat,
+			' ' as creusr,
+			' ' as upddat,
+			' ' as updusr,
+			' ' as delflg,
+			' ' as delusr
+		from
+			tab_brtitleinfo_floor
+		where 1=1
+		and mgmBldrgstPk = #{mgmBldrgstPk}
+		order by flrGbCd desc, case flrGbCd when'10' then -flrNo else flrNo end desc  		
+    </select>
+
+
+	<!-- 창고기본정보 등록 -->    
+    <insert id="insertWahama" parameterType="gu.warehouse.WahamaVO" >
+			insert into tab_wahama 
+					(whcode, cate01, cate02, cate03, whname, whnama, ifarea, iftype, ifstrt, ifsize, mpadrs, mpadro, 
+				     mpsggc, mpdngc, mpabun, mpadji, trcoty, trtrck, trdock, szposi, szstrt, szarea, sbcret, svlret, 
+				     sbcvlt, stflnu, stblnu, stpknu, stmanu, stetnu, stmeln, stheln, prprdy, prstdy, prusdy, cofine, 
+				     cooper, img001, img002, img003, avi001, avi002, etcstr, bacode, brcode, goompx, goompy, navmpx, navmpy, kkompx, kkompy,
+				     lmpsif, lmpsit, lmppay, lmpinc, lmpdps, lmpwhc, lmpdcc, lmpofc, lmppbc, lmpwtc, lmpupp, lmprtf, lmpadd,
+			         cdvown, cdvsih, cdvsig, cdvgam, cdvsul, lmvown, lmvamc, lmvcom, lmvetc, catnam, catpos, cattel, cathpg, cateml, catcad,
+				     mpicif, status, credat, creusr, upddat, updusr, delflg, delusr) 
+			values	(#{whcode}, #{cate01}, #{cate02}, #{cate03}, #{whname}, #{whnama}, #{ifarea}, #{iftype}, #{ifstrt}, #{ifsize}, #{mpadrs}, #{mpadro}, 
+				     #{mpsggc}, #{mpdngc}, #{mpabun}, #{mpadji}, #{trcoty}, #{trtrck}, #{trdock}, #{szposi}, #{szstrt}, #{szarea}, #{sbcret}, #{svlret}, 
+				     #{sbcvlt}, #{stflnu}, #{stblnu}, #{stpknu}, #{stmanu}, #{stetnu}, #{stmeln}, #{stheln}, #{prprdy}, #{prstdy}, #{prusdy}, #{cofine}, 
+				     #{cooper}, #{img001}, #{img002}, #{img003}, #{avi001}, #{avi002}, #{etcstr}, #{bacode}, #{brcode}, #{goompx}, #{goompy}, #{navmpx}, #{navmpy}, #{kkompx}, #{kkompy}, 
+				     #{lmpsif}, #{lmpsit}, #{lmppay}, #{lmpinc}, #{lmpdps}, #{lmpwhc}, #{lmpdcc}, #{lmpofc}, #{lmppbc}, #{lmpwtc}, #{lmpupp}, #{lmprtf}, #{lmpadd},
+				     #{cdvown}, #{cdvsih}, #{cdvsig}, #{cdvgam}, #{cdvsul}, #{lmvown}, #{lmvamc}, #{lmvcom}, #{lmvetc}, #{catnam}, #{catpos}, #{cattel}, #{cathpg}, #{cateml}, #{catcad},
+				     #{mpicif}, #{status}, NOW(), #{creusr}, #{upddat}, #{updusr}, 'N', #{delusr}) 
+    </insert>        
+
+<!-- 창고층별정보 등록 -->    
+    <insert id="insertWahafl" parameterType="gu.warehouse.WahaflVO" >
+			insert into	tab_wahafl 
+			(   
+			    whcode,	whfudn,	whflcd,	whflnm,	whfuse,	whtemp,	flhegt,	docknu,	flweit,	flarea,	fllmyn, fllmsz,	flszwa,	flszof,	flszdo,	flszmz,	flslwa,	flslof,	flsldo,
+				flslmz,	flmpay,	admpay,	pprice,	lsusr1,	lsusr2,	lsusr3,	lsfnow, lsfrom,	lstmto,	lsdiva,	
+				cadf01,	cadf02,	cadf03,	avif01,	avif02,	avif03,	dealty,	etcstr,
+				flsewa,	flsedo,	flseof,	flsemz,	flsesz,	pricyn,	
+				bapkcd,	brpkcd,	infday,	status,	credat,	creusr,	upddat, updusr,	delflg,	delusr,	whfseq,
+				trdock
+			 ) values (
+			    #{whcode},	#{whfudn},	#{whflcd},	#{whflnm},	#{whfuse},	#{whtemp},	#{flhegt},	#{docknu},	#{flweit},	#{flarea},	#{fllmyn},	#{fllmsz},	#{flszwa},	#{flszof},	#{flszdo},
+				#{flszmz},	#{flslwa},	#{flslof},	#{flsldo},	#{flslmz},	#{flmpay},	#{admpay},	#{pprice},	#{lsusr1},	#{lsusr2},	#{lsusr3},	#{lsfnow},	#{lsfrom},	#{lstmto},	#{lsdiva},
+				#{cadf01},	#{cadf02},	#{cadf03},	#{avif01},	#{avif02},	#{avif03},	#{dealty},	#{etcstr},	
+				#{flsewa},	#{flsedo},	#{flseof},	#{flsemz},	#{flsesz},	#{pricyn},	
+				#{bapkcd},	#{brpkcd},	#{infday},	#{status},	NOW(),	#{creusr}, #{upddat},	#{updusr},	'N',	#{delusr},	#{whfseq},
+				#{trdock}
+			)
+    </insert>        
+
+
+
+<!-- 창고기본정보 수정 -->    
+    <update id="updateWahama" parameterType="gu.warehouse.WahamaVO">
+			update
+				tab_wahama
+			set
+				cate01 = #{cate01},
+				cate02 = #{cate02},
+				cate03 = #{cate03},
+				whname = #{whname},
+				whnama = #{whnama},
+				ifarea = #{ifarea},
+				iftype = #{iftype},
+				ifstrt = #{ifstrt},
+				ifsize = #{ifsize},
+				mpadrs = #{mpadrs},
+				mpadro = #{mpadro},
+				mpsggc = #{mpsggc},
+				mpdngc = #{mpdngc},
+				mpabun = #{mpabun},
+				mpadji = #{mpadji},
+				trcoty = #{trcoty},
+				trtrck = #{trtrck},
+				trdock = #{trdock},
+				szposi = #{szposi},
+				szstrt = #{szstrt},
+				szarea = #{szarea},
+				sbcret = #{sbcret},
+				svlret = #{svlret},
+				sbcvlt = #{sbcvlt},
+				stflnu = #{stflnu},
+				stblnu = #{stblnu},
+				stpknu = #{stpknu},
+				stmanu = #{stmanu},
+				stetnu = #{stetnu},
+				stmeln = #{stmeln},
+				stheln = #{stheln},
+				prprdy = #{prprdy},
+				prstdy = #{prstdy},
+				prusdy = #{prusdy},
+				cofine = #{cofine},
+				cooper = #{cooper},
+				img001 = #{img001},
+				img002 = #{img002},
+				img003 = #{img003},
+				avi001 = #{avi001},
+				avi002 = #{avi002},
+				etcstr = #{etcstr},
+				bacode = #{bacode},
+				brcode = #{brcode},
+				goompx = #{goompx},
+				goompy = #{goompy},
+				navmpx = #{navmpx},
+				navmpy = #{navmpy},
+				kkompx = #{kkompx},
+				kkompy = #{kkompy},
+				mpicif = #{mpicif},
+				status = #{status},
+				lmpsif = #{lmpsif},
+				lmpsit = #{lmpsit},
+				lmppay = #{lmppay},
+				lmpinc = #{lmpinc},
+				lmpdps = #{lmpdps},
+				lmpwhc = #{lmpwhc},
+				lmpdcc = #{lmpdcc},
+				lmpofc = #{lmpofc},
+				lmppbc = #{lmppbc},
+				lmpwtc = #{lmpwtc},
+				lmpupp = #{lmpupp},
+				lmprtf = #{lmprtf},
+				lmpadd = #{lmpadd},
+				cdvown = #{cdvown},
+				cdvsih = #{cdvsih},
+				cdvsig = #{cdvsig},
+				cdvgam = #{cdvgam},
+				cdvsul = #{cdvsul},
+				lmvown = #{lmvown},
+				lmvamc = #{lmvamc},
+				lmvcom = #{lmvcom},
+				lmvetc = #{lmvetc},
+				catnam = #{catnam},
+				catpos = #{catpos},
+				cattel = #{cattel},
+				cathpg = #{cathpg},
+				cateml = #{cateml},
+				catcad = #{catcad},
+				upddat = NOW(),
+				updusr = #{updusr},
+			where 1=1
+			and whcode = #{whcode}
+			;    
+    </update> 
+
+<!-- 창고층별정보 수정 -->
+    <update id="updateWahafl" parameterType="gu.warehouse.WahaflVO">
+		update
+			tab_wahafl
+		set
+			whcode = #{whcode},
+			whfudn = #{whfudn},
+			whflcd = #{whflcd},
+			whflnm = #{whflnm},
+			whfuse = #{whfuse},
+			whtemp = #{whtemp},
+			flhegt = #{flhegt},
+			docknu = #{docknu},
+			flweit = #{flweit},
+			flarea = #{flarea},
+			fllmyn = #{fllmyn},
+			fllmsz = #{fllmsz},
+			flszwa = #{flszwa},
+			flszof = #{flszof},
+			flszdo = #{flszdo},
+			flszmz = #{flszmz},
+			flslwa = #{flslwa},
+			flslof = #{flslof},
+			flsldo = #{flsldo},
+			flslmz = #{flslmz},
+			flsewa = #{flsewa},
+			flsedo = #{flsedo},
+			flseof = #{flseof},
+			flsemz = #{flsemz},
+			flsesz = #{flsesz},
+			pricyn = #{pricyn},
+			flmpay = #{flmpay},
+			admpay = #{admpay},
+			pprice = #{pprice},
+			lsusr1 = #{lsusr1},
+			lsusr2 = #{lsusr2},
+			lsusr3 = #{lsusr3},
+			lsfnow = #{lsfnow},
+			lsfrom = #{lsfrom},
+			lstmto = #{lstmto},
+			lsdiva = #{lsdiva},
+			cadf01 = #{cadf01},
+			cadf02 = #{cadf02},
+			cadf03 = #{cadf03},
+			avif01 = #{avif01},
+			avif02 = #{avif02},
+			avif03 = #{avif03},
+			dealty = #{dealty},
+			etcstr = #{etcstr},
+			bapkcd = #{bapkcd},
+			brpkcd = #{brpkcd},
+			infday = #{infday},
+			status = #{status},
+
+			upddat = NOW(),
+			updusr = #{updusr},
+			whfseq = #{whfseq},
+			trdock = #{trdock}
+			where 1=1
+			and whcode = #{whcode}
+			and whfseq = #{whfseq}
+			;    
+    </update> 
+
+
+<!-- 창고기본정보 수정(삭제플러그) -->    
+    <update id="updatedDelWahama" parameterType="gu.warehouse.WahamaVO">
+			update
+				tab_wahama
+			set
+				delflg = #{delflg}
+			where 1=1
+			and whcode = #{whcode}
+			;    
+    </update> 
+
+<!-- 창고기본정보 수정(삭제플러그) -->    
+    <update id="updatedDelWahafl" parameterType="gu.warehouse.WahamaVO">
+			update
+				tab_wahafl
+			set
+				delflg = #{delflg}
+			where 1=1
+			and whcode = #{whcode}
+			;    
+    </update> 
+    
+    
+	<!-- 창고매칭정보 조회 -->    
+    <select id="selectMatchList" parameterType="gu.common.SearchVO" resultType="map">
+		select
+			mn.reqseq,
+			mn.lmtemp,
+			mn.lmsize,
+			mn.larea0,
+			mn.larea1,
+			mn.larea2,
+			mn.larea3,
+			mn.lminow,
+			mn.lmsize,
+			mn.lmfrom,
+			mn.lmterm,
+			mn.reqday,
+			mn.rqstat,
+			wmf.wmf_whcode,
+			wmf.wmf_whname,
+			wmf.wmf_mpadrs,
+			wmf.wmf_szarea,
+			wmf.wmf_ifsize,
+			wmf.wmf_whflnm,
+			wmf.wmf_fllmsz,	
+			wmf.wmf_whfuse,
+			wmf.wmf_whtemp,
+			wmf.wmf_lsfnow,
+			wmf.wmf_lsfrom,
+			wmf.wmf_status,	
+			(mn.lmsize - wmf.wmf_fllmsz) difsize
+		from
+			tab_reqlm_mng mn,
+			(
+				select  
+					wm.whcode wmf_whcode,
+					wm.whname wmf_whname,
+					wm.mpadrs wmf_mpadrs,
+					wm.szarea wmf_szarea,
+					wm.ifsize wmf_ifsize,
+					wf.whfseq wmf_whfseq,
+					wf.whflnm wmf_whflnm,
+					wf.whfuse wmf_whfuse,
+					wf.whtemp wmf_whtemp,
+					wf.lsfnow wmf_lsfnow,
+					wf.lsfrom wmf_lsfrom,
+					wf.status wmf_status,
+					wf.fllmsz wmf_fllmsz
+				from 
+					tab_wahama wm left outer join tab_wahafl wf
+					on wm.whcode = wf.whcode 
+			) wmf 
+		where 1=1
+         <if test="searchExt2 == '매칭' ">
+		 	and mn.lmtemp like CONCAT('%', wmf.wmf_whtemp,'%') and (wmf.wmf_whtemp != '')
+         </if>			
+         <if test="searchExt3 == '클로징제외' ">
+			and wmf.wmf_status != '클로징'
+         </if>			
+         <if test="searchExt4 != '' ">
+	         <if test="searchExt4 == '즉시' ">
+				and wmf.wmf_lsfnow = '즉시'
+			</if>
+	         <if test="searchExt4 == '협의' ">
+				and wmf.wmf_lsfnow = '협의'
+			</if>
+	         <if test="searchExt4 == '즉시 또는 협의' ">
+				and ((wmf.wmf_lsfnow = '즉시') or (wmf.wmf_lsfnow = '협의')) 
+			</if>
+         </if>			
+         <if test="searchExt5 == '매칭' ">
+		 	and (
+		 		case mn.larea0 
+		 			when '수도권' then ((wmf.wmf_mpadrs like '서울%') or (wmf.wmf_mpadrs like '인천%') or (wmf.wmf_mpadrs like '경기%') ) 
+		 			when '수도권외' then ((wmf.wmf_mpadrs not like '서울%') and (wmf.wmf_mpadrs not like '인천%') and (wmf.wmf_mpadrs not like '경기%') ) 
+		 		else
+		 			1=1
+		 		end
+	 		)
+ 		 </if>			
+			and (abs(mn.lmsize-wmf.wmf_fllmsz) between 0 and #{searchExt1})
+		order by
+			mn.reqseq ,	wmf.wmf_whcode,	wmf.wmf_whfseq
+    </select>
+    
+        
+<!-- 창고정보 메인검색(지도검색) -->         
+    <select id="selectWareMapList"  parameterType="gu.common.SearchVO" resultType="gu.warehouse.WareInfoVO">
+		select
+				wh.whcode,
+				wh.cate01,
+				wh.cate02,
+				wh.cate03,
+				wh.whname,
+				wh.whnama,
+				wh.ifarea,
+				wh.iftype,
+				wh.ifstrt,
+				wh.ifsize,
+				wh.mpadrs,
+				wh.mpadro,
+				wh.mpsggc,
+				wh.mpdngc,
+				wh.mpabun,
+				wh.mpadji,
+				wh.trcoty,
+				wh.trtrck,
+				wh.trdock,
+				wh.szposi,
+				wh.szstrt,
+				wh.szarea,
+				wh.sbcret,
+				wh.svlret,
+				wh.sbcvlt,
+				wh.stflnu,
+				wh.stblnu,
+				wh.stpknu,
+				wh.stmanu,
+				wh.stetnu,
+				wh.stmeln,
+				wh.stheln,
+				wh.prprdy,
+				wh.prstdy,
+				wh.prusdy,
+				wh.cofine,
+				wh.cooper,
+				wh.img001,
+				wh.img002,
+				wh.img003,
+				wh.avi001,
+				wh.avi002,
+				wh.bacode,
+				wh.brcode,
+				wh.goompx,
+				wh.goompy,
+				wh.navmpx,
+				wh.navmpy,
+				wh.kkompx,
+				wh.kkompy,
+				wh.lmpsif,
+				wh.lmpsit,
+				wh.lmppay,
+				wh.lmpinc,
+				wh.lmpdps,
+				wh.lmpwhc,
+				wh.lmpdcc,
+				wh.lmpofc,
+				wh.lmppbc,
+				wh.lmpwtc,
+				wh.lmpupp,
+				wh.lmprtf,
+				wh.lmpadd,
+				
+				wh.cdvown,
+				wh.cdvsih,
+				wh.cdvsig,
+				wh.cdvgam,
+				wh.cdvsul,
+				wh.lmvown,
+				wh.lmvamc,
+				wh.lmvcom,
+				wh.lmvetc,
+				wh.catnam,
+				wh.catpos,
+				wh.cattel,
+				wh.cathpg,			
+				wh.cateml,			
+				wh.catcad,			
+				
+				wh.mpicif
+		from
+			tab_wahama wh
+		where 1=1
+			and (wh.mpadrs LIKE CONCAT('%', #{searchKeyword},'%'))
+		order by wh.whcode desc
+         <if test="rowStart != null">
+             LIMIT ${rowStart-1}, 10000
+         </if>		
+    </select>            
+        
+<!-- Seqence 등록 -->    
+    <select id="getSeqWhcode" resultType="Integer" >
+	 	select nextval(seq_whcode)		
+    </select>
+         
+    <select id="getSeqReqseq" resultType="Integer" >
+	 	select nextval(seq_reqseq)		
+    </select>         
+    
+
+<!--  //////////////////////////////////// 아래삭제 //////////////////////////////////// -->      
+
     <select id="selectWareList"  parameterType="gu.common.SearchVO" resultType="gu.warehouse.WarehouseVO">
 	   SELECT    
 				whcode,
@@ -22,10 +1646,10 @@
              LIMIT ${rowStart-1}, 10000
          </if>
          order by whcode desc
-    </select> 
-    
-    
-    <select id="selectWareListInfo"  parameterType="gu.common.SearchVO" resultType="gu.warehouse.WareInfoVO">
+    </select>
+     
+
+    <select id="selectWareGridList"  parameterType="gu.common.SearchVO" resultType="gu.warehouse.WarehouseVO">
 		select
 			wh.whcode,
 			wh.whname,
@@ -48,52 +1672,17 @@
 			wh.img005,
 			wh.mpicif,
 			wh.etcstr,				
-			wh.mgbdrgpk,				
-			wf.whflcd,
-			wf.whflnm,
-			wf.usetyp,
-			wf.flarea,
-			wf.flmpay,
-			wf.admpay,
-			wf.pprice,
-			wf.lsfrom,
-			wf.cadf01,
-			wf.dealty,
-			wf.infday
+			wh.mgbdrgpk
 		from
-			tb_wahama wh left outer join tb_wahafl wf
-			on wh.whcode = wf.whcode 
+			tb_wahama wh 
 		where 1=1
 		and (wh.whname LIKE CONCAT('%', #{searchKeyword},'%') or wh.mpadrs LIKE CONCAT('%', #{searchKeyword},'%'))
-		and wf.FLAREA between #{searchExt1} and #{searchExt2}
-		and wf.FLAREA > 100
-		order by wh.whcode asc, wf.whflnm asc
+		order by wh.whcode asc
          <if test="rowStart != null">
              LIMIT ${rowStart-1}, 10000
          </if>		
     </select>     
-
-
-    <select id="selectWareFloor"  parameterType="String"  resultType="gu.warehouse.WareFloorVO">
-		select
-			wf.whcode,
-			wf.whflcd,
-			wf.whflnm,
-			wf.usetyp,
-			wf.flarea,
-			wf.flmpay,
-			wf.admpay,
-			wf.pprice,
-			wf.lsfrom,
-			wf.cadf01,
-			wf.dealty,
-			wf.infday
-		from tb_wahafl wf
-		where 1=1
-		and	wf.whcode = #{whcode} 
-		and wf.flarea > 100
-		order by wf.whflnm asc
-    </select>     
+    
     
     <select id="selectCheckWarehouse"  parameterType="java.util.Map" resultType="gu.warehouse.WarehouseVO">
 	   SELECT    
@@ -111,44 +1700,6 @@
 		    </foreach>         
     </select>        
     
-    <select id="selectWareOne" parameterType="String" resultType="gu.warehouse.WarehouseVO">
-	   SELECT    
-			TC.whcode,
-			TC.whname,
-			TC.mpadrs,
-			TC.kkompx,
-			TC.kkompy,
-			TC.szposi,
-			TC.szstrt,
-			TC.szarea,
-			TC.ifsize,
-			TC.ifstrt,
-			TC.trcoty,
-			TC.prprdy,
-			TC.prstdy,
-			TC.prusdy,
-			TC.img001,
-			TC.img002,
-			TC.img003,
-			TC.img004,
-			TC.img005,
-			TC.mpicif,
-			TC.etcstr,
-			TC.mgbdrgpk			
-          FROM tb_wahama TC
-          where 1=1
-    	  AND   TC.whcode = #{whcode}
-    </select> 
-    
-    <insert id="insertWare" parameterType="gu.warehouse.WarehouseVO" >
-        <selectKey resultType="String" keyProperty="whcode" order="BEFORE">
-            SELECT IFNULL(MAX(whcode),0)+1 FROM tb_wahama
-        </selectKey>
-   		INSERT INTO tb_wahama (WHCODE, WHNAME, MPADRS, KKOMPX, KKOMPY, SZAREA, IMG001) 
-   		VALUES(#{whcode}, #{whname}, #{mpadrs}, #{kkompx}, #{kkompy}, #{szarea}, #{img001})
-    </insert>    
-    
-
     <insert id="insertXLS" parameterType="gu.etc.ExcelVo"  > 
         <selectKey resultType="Integer" keyProperty="seq" order="BEFORE">
             SELECT IFNULL(MAX(seq),0)+1 FROM tb_xls_upload
@@ -331,7 +1882,6 @@
 			group by ldxy    
     </select>      
     
-    
     <select id="selectTitlePartCount" resultType="Integer" parameterType="gu.common.SearchVO">
 		select count(1) from (
 			select ldxy
@@ -343,8 +1893,6 @@
 		) w			
     </select> 
     
-
-
     <select id="selectGrpSigunguList" parameterType="String" resultType="gu.common.ComboVO">
 		select 
 			sggucd combovalue, 

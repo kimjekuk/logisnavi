@@ -46,7 +46,7 @@ function fn_search() {
                 <div class="modal-body" id="myModalBody">
 		            <!-- /.row -->
 		            <div class="row">
-		            	<div class="col-lg-5" >
+		            	<div class="fs-3" >
 			            	<div class="panel panel-default" >
 			            		<div class="panel-heading">
 			                            <s:message code="common.deptList"/>

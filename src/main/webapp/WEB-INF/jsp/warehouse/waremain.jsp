@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 
 <head>
     <title>Zay Shop eCommerce HTML CSS Template</title>
